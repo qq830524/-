@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>解析提示卡 · 紫微 × 人類圖</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1e1b18;
+  --cream: #faf7f2;
+  --border: #e4ddd4;
+  --gray: #8c857d;
+  --gold: #a07830;
+  --gold-bg: #fdf8f0;
+  --rose: #8a4a5a;
+  --rose-bg: #fdf4f6;
+  --green: #2d6a4f;
+  --green-bg: #edf6f1;
+  --blue: #2e4f7a;
+  --blue-bg: #eff4fb;
+  --rust: #8a3a1e;
+  --rust-bg: #fdf1ed;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans TC',sans-serif; background:var(--cream); color:var(--ink); padding:32px 20px 64px; }
+
+.page { max-width:720px; margin:0 auto; }
+
+/* HEADER */
+.header { text-align:center; margin-bottom:40px; }
+.header-eyebrow { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.header h1 { font-family:'Noto Serif TC',serif; font-size:26px; font-weight:700; margin-bottom:6px; }
+.header p { font-size:13px; color:var(--gray); line-height:1.7; }
+
+/* THEME CARD */
+.theme { background:#fff; border:1px solid var(--border); border-radius:10px; margin-bottom:24px; overflow:hidden; }
+.theme-header { padding:16px 22px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
+.theme-icon { font-size:22px; }
+.theme-title { font-family:'Noto Serif TC',serif; font-size:18px; font-weight:700; }
+.theme-sub { font-size:11.5px; color:var(--gray); margin-top:2px; }
+.theme-body { padding:20px 22px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:560px){ .theme-body { grid-template-columns:1fr; } }
+
+/* STEP BOX */
+.step { border-radius:7px; padding:14px 16px; }
+.step-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.step-label::after { content:''; flex:1; height:1px; background:currentColor; opacity:0.15; }
+.step ul { list-style:none; }
+.step ul li { font-size:12.5px; line-height:1.75; padding:3px 0; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; gap:7px; }
+.step ul li:last-child { border-bottom:none; }
+.step ul li::before { content:'→'; opacity:0.4; flex-shrink:0; }
+
+/* INTEGRATION ROW */
+.integration { margin:0 22px 20px; background:var(--ink); border-radius:7px; padding:14px 16px; }
+.int-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:8px; }
+.int-template { font-size:13px; color:rgba(245,240,232,0.8); line-height:1.8; font-style:italic; }
+.int-template strong { color:var(--gold); font-style:normal; }
+
+/* KEY QUESTION */
+.key-q { margin:0 22px 20px; background:var(--gold-bg); border:1px solid #e8d098; border-radius:7px; padding:12px 16px; }
+.key-q-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:700; color:var(--gold); margin-bottom:6px; }
+.key-q p { font-size:12.5px; color:#6a4e1e; line-height:1.75; }
+
+/* COLORS */
+.love .theme-header { background:var(--rose-bg); }
+.love .theme-title { color:var(--rose); }
+.love .step-zw { background:#fdf9f7; } .love .step-zw .step-label { color:var(--gold); }
+.love .step-hd { background:var(--rose-bg); } .love .step-hd .step-label { color:var(--rose); }
+
+.wealth .theme-header { background:var(--green-bg); }
+.wealth .theme-title { color:var(--green); }
+.wealth .step-zw { background:#f7fbf9; } .wealth .step-zw .step-label { color:var(--gold); }
+.wealth .step-hd { background:var(--green-bg); } .wealth .step-hd .step-label { color:var(--green); }
+
+.career .theme-header { background:var(--blue-bg); }
+.career .theme-title { color:var(--blue); }
+.career .step-zw { background:#f7f9fc; } .career .step-zw .step-label { color:var(--gold); }
+.career .step-hd { background:var(--blue-bg); } .career .step-hd .step-label { color:var(--blue); }
+
+.health .theme-header { background:var(--rust-bg); }
+.health .theme-title { color:var(--rust); }
+.health .step-zw { background:#fdf8f6; } .health .step-zw .step-label { color:var(--gold); }
+.health .step-hd { background:var(--rust-bg); } .health .step-hd .step-label { color:var(--rust); }
+
+.footer { text-align:center; font-size:11.5px; color:var(--gray); margin-top:40px; line-height:1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="header-eyebrow">解析師工具 · 內部使用</div>
+  <h1>解析提示卡</h1>
+  <p>紫微斗數 × 人類圖 · 四大主題解析流程<br>解盤前對照，確保每個主題都有紮實的結構</p>
+</div>
+
+<!-- ── 感情 ── -->
+<div class="theme love">
+  <div class="theme-header">
+    <span class="theme-icon">♡</span>
+    <div>
+      <div class="theme-title">感情 · 關係解析</div>
+      <div class="theme-sub">核心問題：這個人如何去愛？在關係中的模式是什麼？</div>
+    </div>
+  </div>
+  <div class="theme-body">
+    <div class="step step-zw">
+      <div class="step-label">第一步 · 紫微定主軸</div>
+      <ul>
+        <li>命宮主星 → 感情底色、吸引力特質</li>
+        <li>夫妻宮主星 → 命中伴侶類型、關係模式</li>
+        <li>化忌落夫妻宮或宮主？→ 感情課題</li>
+        <li>化祿／桃花星 → 感情機緣強弱</li>
+        <li>天刑、天哭 → 孤剋或分離模式</li>
+      </ul>
+    </div>
+    <div class="step step-hd">
+      <div class="step-label">第二步 · 人類圖補一角</div>
+      <ul>
+        <li>情緒中心定義？→ 有：等情緒平穩再決定；無：易吸收對方情緒</li>
+        <li>G中心定義？→ 有：身分認同穩定；無：需要對的環境才能找到愛</li>
+        <li>薦骨中心定義？→ 有：身體直覺知道對不對</li>
+        <li>通道有感情相關？→ 6-59、12-22、59-49</li>
+      </ul>
+    </div>
+  </div>
+  <div class="key-q">
+    <div class="key-q-label">解盤前問自己</div>
+    <p>這個人的感情困境，是「吸引錯的人」還是「用錯方式去愛」？紫微告訴你吸引力，人類圖告訴你方式。</p>
+  </div>
+  <div class="integration">
+    <div class="int-label">✦ 整合洞見模板</div>
+    <div class="int-template">
+      「你的 <strong>[命宮/夫妻宮主星]</strong> 讓你在感情裡天生 <strong>[特質]</strong>，
+      但你的情緒中心<strong>[有/無]定義</strong>意味著你其實需要 <strong>[建議]</strong>，
+      才能在關係中真正安心。」
+    </div>
+  </div>
+</div>
+
+<!-- ── 財富 ── -->
+<div class="theme wealth">
+  <div class="theme-header">
+    <span class="theme-icon">◈</span>
+    <div>
+      <div class="theme-title">財富 · 豐盛解析</div>
+      <div class="theme-sub">核心問題：這個人怎麼賺錢才順？財富阻塞在哪？</div>
+    </div>
+  </div>
+  <div class="theme-body">
+    <div class="step step-zw">
+      <div class="step-label">第一步 · 紫微定主軸</div>
+      <ul>
+        <li>財帛宮主星 → 正財／偏財傾向、賺錢模式</li>
+        <li>化祿落哪個宮？→ 那個方向容易有收入</li>
+        <li>福德宮 → 享受財富的能力、消費模式</li>
+        <li>化忌落財帛？→ 財富課題、漏財模式</li>
+        <li>祿存位置 → 穩定財富的來源</li>
+      </ul>
+    </div>
+    <div class="step step-hd">
+      <div class="step-label">第二步 · 人類圖補一角</div>
+      <ul>
+        <li>類型 → 決定賺錢策略：生產者等回應、投射者等邀請</li>
+        <li>薦骨中心定義？→ 有：持續工作能量強；無：需選擇性投入</li>
+        <li>意志力中心定義？→ 有：承諾力強；無：不適合用意志力硬撐</li>
+        <li>通道有財富相關？→ 2-14、21-45、32-54</li>
+      </ul>
+    </div>
+  </div>
+  <div class="key-q">
+    <div class="key-q-label">解盤前問自己</div>
+    <p>這個人的財富問題，是「賺不到」還是「留不住」還是「用錯方法賺」？三個答案方向完全不同。</p>
+  </div>
+  <div class="integration">
+    <div class="int-label">✦ 整合洞見模板</div>
+    <div class="int-template">
+      「你的財帛宮 <strong>[主星]</strong> 適合 <strong>[正財/偏財/腦力]</strong> 型的財富，
+      而你的人類圖類型是 <strong>[類型]</strong>，代表你用 <strong>[策略]</strong> 的方式賺錢才會順流，
+      硬撐反而會漏財。」
+    </div>
+  </div>
+</div>
+
+<!-- ── 職涯 ── -->
+<div class="theme career">
+  <div class="theme-header">
+    <span class="theme-icon">◆</span>
+    <div>
+      <div class="theme-title">職涯 · 事業解析</div>
+      <div class="theme-sub">核心問題：這個人適合什麼樣的工作環境與角色？</div>
+    </div>
+  </div>
+  <div class="theme-body">
+    <div class="step step-zw">
+      <div class="step-label">第一步 · 紫微定主軸</div>
+      <ul>
+        <li>事業宮（官祿宮）主星 → 適合的職業領域</li>
+        <li>化權落哪？→ 那個方向有掌控力與發展空間</li>
+        <li>化科落哪？→ 名聲、專業聲望的來源</li>
+        <li>命宮主星 → 工作風格、領導或執行型</li>
+        <li>遷移宮 → 適合在外發展還是在地深耕</li>
+      </ul>
+    </div>
+    <div class="step step-hd">
+      <div class="step-label">第二步 · 人類圖補一角</div>
+      <ul>
+        <li>類型策略 → 決定如何正確啟動職涯機會</li>
+        <li>喉嚨中心定義？→ 有：天生表達者；無：說話需要選對時機</li>
+        <li>G中心定義？→ 有：方向感強；無：需嘗試找到對的環境</li>
+        <li>通道有職涯相關？→ 7-31、8-1、16-48</li>
+      </ul>
+    </div>
+  </div>
+  <div class="key-q">
+    <div class="key-q-label">解盤前問自己</div>
+    <p>這個人是「找不到方向」還是「方向對但方法錯」還是「環境不對」？職涯卡關通常是三者之一。</p>
+  </div>
+  <div class="integration">
+    <div class="int-label">✦ 整合洞見模板</div>
+    <div class="int-template">
+      「你的事業宮 <strong>[主星]</strong> 指出你在 <strong>[領域]</strong> 有天生優勢，
+      而你的人類圖類型 <strong>[類型]</strong> 告訴你，你適合 <strong>[工作方式]</strong>，
+      而不是 <strong>[反面建議]</strong>，這樣職涯才會走得長遠。」
+    </div>
+  </div>
+</div>
+
+<!-- ── 健康 ── -->
+<div class="theme health">
+  <div class="theme-header">
+    <span class="theme-icon">⊕</span>
+    <div>
+      <div class="theme-title">健康 · 身心解析</div>
+      <div class="theme-sub">核心問題：這個人的能量怎麼管理？身體在提醒什麼？</div>
+    </div>
+  </div>
+  <div class="theme-body">
+    <div class="step step-zw">
+      <div class="step-label">第一步 · 紫微定主軸</div>
+      <ul>
+        <li>疾厄宮主星 → 先天體質傾向、易出問題的系統</li>
+        <li>化忌落疾厄或宮主？→ 健康課題警示</li>
+        <li>煞星入疾厄 → 意外、開刀機緣</li>
+        <li>福德宮 → 精神狀態、壓力承受能力</li>
+        <li>命宮煞忌 → 整體生命能量強弱</li>
+      </ul>
+    </div>
+    <div class="step step-hd">
+      <div class="step-label">第二步 · 人類圖補一角</div>
+      <ul>
+        <li>類型 → 決定能量補充方式：生產者需釋放、投射者需休息</li>
+        <li>直覺中心（脾臟）定義？→ 有：身體直覺強；無：需刻意傾聽身體</li>
+        <li>根部中心定義？→ 有：壓力耐受強；無：易被外在壓力影響</li>
+        <li>情緒中心定義？→ 情緒波動是否影響身體健康</li>
+      </ul>
+    </div>
+  </div>
+  <div class="key-q">
+    <div class="key-q-label">解盤前問自己</div>
+    <p>這個人的健康問題，是「身體先天弱」還是「能量管理出問題」還是「情緒壓力轉化成身體症狀」？</p>
+  </div>
+  <div class="integration">
+    <div class="int-label">✦ 整合洞見模板</div>
+    <div class="int-template">
+      「你的疾厄宮 <strong>[主星]</strong> 提示你需要特別注意 <strong>[身體系統]</strong>，
+      而你的人類圖類型 <strong>[類型]</strong> 告訴你，<strong>[休息方式]</strong> 才是你真正補充能量的方法，
+      過度消耗對你的傷害比一般人更大。」
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  ✦ 解析師內部工具 · 請勿外流 ✦<br>
+  紫微斗數 × 人類圖 整合解析
+</div>
+
+</div>
+</body>
+</html>
